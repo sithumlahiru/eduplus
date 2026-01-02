@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Layout } from '../layouts/Layout';
 import { useAuthStore } from '../store';
@@ -11,6 +11,21 @@ interface StatCard {
 }
 
 export const DashboardPage: React.FC = () => {
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => setNow(new Date()), 60000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const headerDateTime = useMemo(() => {
+    const formatted = new Intl.DateTimeFormat(undefined, {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    }).format(now);
+    return formatted;
+  }, [now]);
+
   const stats = {
     totalStudents: 156,
     totalClasses: 8,
@@ -51,7 +66,7 @@ export const DashboardPage: React.FC = () => {
   ];
 
   return (
-    <Layout title="Dashboard">
+    <Layout title="Dashboard" headerRight={headerDateTime}>
       <div className="space-y-8">
         {/* Welcome Section */}
         <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-lg p-6 md:p-8">
