@@ -1,20 +1,11 @@
 {
-  "builds": [
+  "installCommand": "cd preschool-management-app && npm install",
+  "buildCommand": "cd preschool-management-app && npm run build",
+  "outputDirectory": "preschool-management-app/build",
+  "rewrites": [
     {
-      "src": "preschool-management-app/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "preschool-management-app/build"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
