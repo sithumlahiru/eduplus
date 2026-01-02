@@ -1,6 +1,28 @@
-import React, { useState } from 'react';
-import { Layout } from '../layouts/Layout';
-import { formatDistanceToNow } from 'date-fns';
+import React, { useState } from "react";
+import { formatDistanceToNow } from "date-fns";
+import { Megaphone, Plus, Trash2 } from "lucide-react";
+
+import { Layout } from "../layouts/Layout";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
 
 interface Announcement {
   id: string;
@@ -14,35 +36,35 @@ interface Announcement {
 export const AnnouncementsPage: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-    target: 'all' as const,
+    title: "",
+    content: "",
+    target: "all" as const,
   });
 
   const [announcements, setAnnouncements] = useState<Announcement[]>([
     {
-      id: '1',
-      title: 'School Closed Tomorrow',
-      content: 'The preschool will be closed tomorrow due to a public holiday.',
+      id: "1",
+      title: "School Closed Tomorrow",
+      content: "The preschool will be closed tomorrow due to a public holiday.",
       createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      createdBy: 'Admin',
-      target: 'all',
+      createdBy: "Admin",
+      target: "all",
     },
     {
-      id: '2',
-      title: 'Parent-Teacher Meeting',
-      content: 'Please join us for the monthly parent-teacher meeting on Friday at 3:00 PM.',
+      id: "2",
+      title: "Parent-Teacher Meeting",
+      content: "Please join us for the monthly parent-teacher meeting on Friday at 3:00 PM.",
       createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-      createdBy: 'Mrs. Herath',
-      target: 'parents',
+      createdBy: "Mrs. Herath",
+      target: "parents",
     },
     {
-      id: '3',
-      title: 'Staff Training Session',
-      content: 'All teachers are requested to attend the training session on Monday.',
+      id: "3",
+      title: "Staff Training Session",
+      content: "All teachers are requested to attend the training session on Monday.",
       createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      createdBy: 'Admin',
-      target: 'teachers',
+      createdBy: "Admin",
+      target: "teachers",
     },
   ]);
 
@@ -53,135 +75,138 @@ export const AnnouncementsPage: React.FC = () => {
       title: formData.title,
       content: formData.content,
       createdAt: new Date().toISOString(),
-      createdBy: 'Admin',
+      createdBy: "Admin",
       target: formData.target,
     };
     setAnnouncements([newAnnouncement, ...announcements]);
-    setFormData({ title: '', content: '', target: 'all' });
+    setFormData({ title: "", content: "", target: "all" });
     setShowForm(false);
   };
 
   const handleDelete = (id: string) => {
-    setAnnouncements(announcements.filter(a => a.id !== id));
+    setAnnouncements(announcements.filter((a) => a.id !== id));
   };
 
   const getTargetBadge = (target: string) => {
     switch (target) {
-      case 'all':
-        return <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">All</span>;
-      case 'parents':
-        return <span className="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">Parents</span>;
-      case 'teachers':
-        return <span className="px-3 py-1 bg-purple-100 text-purple-800 text-xs rounded-full font-semibold">Teachers</span>;
+      case "all":
+        return <Badge variant="secondary">All</Badge>;
+      case "parents":
+        return <Badge variant="success">Parents</Badge>;
+      case "teachers":
+        return <Badge variant="outline">Teachers</Badge>;
       default:
         return null;
     }
   };
 
   return (
-    <Layout title="Announcements">
+    <Layout
+      title="Announcements"
+      description="Share important updates with parents and staff."
+      headerRight={
+        <Button onClick={() => setShowForm(true)} className="gap-2">
+          <Plus className="h-4 w-4" />
+          New Announcement
+        </Button>
+      }
+    >
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <p className="text-gray-600">Share important updates with parents and staff</p>
-          <button
-            onClick={() => setShowForm(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium flex items-center justify-center gap-2"
-          >
-            <i className="fa-solid fa-plus" />
-            New Announcement
-          </button>
-        </div>
-
-        {/* Add Form Modal */}
-        {showForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full">
-              <div className="p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Create Announcement</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Announcement Title"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                    required
-                  />
-                  <textarea
-                    placeholder="Write your announcement here..."
-                    value={formData.content}
-                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                    rows={6}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
-                    required
-                  ></textarea>
-                  <select
-                    value={formData.target}
-                    onChange={(e) => setFormData({ ...formData, target: e.target.value as any })}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  >
-                    <option value="all">All (Parents & Teachers)</option>
-                    <option value="parents">Parents Only</option>
-                    <option value="teachers">Teachers Only</option>
-                  </select>
-                  <div className="flex gap-4 pt-4">
-                    <button
-                      type="submit"
-                      className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium"
-                    >
-                      Post Announcement
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowForm(false)}
-                      className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-900 py-2 px-4 rounded-lg font-medium"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Announcements List */}
         <div className="space-y-4">
           {announcements.length > 0 ? (
             announcements.map((announcement) => (
-              <div key={announcement.id} className="bg-white rounded-lg shadow hover:shadow-lg transition duration-300 p-6">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-start gap-4 flex-1">
-                    <i className="fa-solid fa-bullhorn text-2xl mt-1 flex-shrink-0" />
-                    <div className="flex-1">
-                      <h3 className="text-lg font-bold text-gray-900">{announcement.title}</h3>
-                      <p className="text-sm text-gray-500">
-                        {announcement.createdBy} • {formatDistanceToNow(new Date(announcement.createdAt), { addSuffix: true })}
+              <Card key={announcement.id}>
+                <CardHeader className="flex flex-row items-start justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                      <Megaphone className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">{announcement.title}</CardTitle>
+                      <p className="text-sm text-muted-foreground">
+                        {announcement.createdBy} •{" "}
+                        {formatDistanceToNow(new Date(announcement.createdAt), {
+                          addSuffix: true,
+                        })}
                       </p>
                     </div>
                   </div>
-                  <button
+                  <Button
+                    size="icon"
+                    variant="ghost"
                     onClick={() => handleDelete(announcement.id)}
-                    className="text-red-600 hover:text-red-800 p-2"
                   >
-                    <i className="fa-solid fa-trash" />
-                  </button>
-                </div>
-                <p className="text-gray-700 mb-4 leading-relaxed">{announcement.content}</p>
-                <div className="flex items-center justify-between pt-4 border-t">
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {announcement.content}
+                  </p>
                   <div>{getTargetBadge(announcement.target)}</div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             ))
           ) : (
-            <div className="text-center py-12 bg-white rounded-lg shadow">
-              <i className="fa-solid fa-bullhorn text-5xl block mb-4" />
-              <p className="text-gray-500">No announcements yet. Create one to get started!</p>
-            </div>
+            <Card>
+              <CardContent className="flex flex-col items-center gap-3 py-12 text-center text-muted-foreground">
+                <Megaphone className="h-10 w-10" />
+                <p>No announcements yet. Create one to get started!</p>
+              </CardContent>
+            </Card>
           )}
         </div>
       </div>
+
+      <Dialog
+        open={showForm}
+        onOpenChange={(open) => {
+          setShowForm(open);
+        }}
+      >
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create announcement</DialogTitle>
+            <DialogDescription>
+              Write a clear update and choose who should receive it.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <Input
+              placeholder="Announcement title"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              required
+            />
+            <Textarea
+              placeholder="Write your announcement here..."
+              value={formData.content}
+              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+              rows={6}
+              required
+            />
+            <Select
+              value={formData.target}
+              onValueChange={(value) => setFormData({ ...formData, target: value as any })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select audience" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All (Parents & Teachers)</SelectItem>
+                <SelectItem value="parents">Parents Only</SelectItem>
+                <SelectItem value="teachers">Teachers Only</SelectItem>
+              </SelectContent>
+            </Select>
+            <DialogFooter>
+              <Button variant="outline" type="button" onClick={() => setShowForm(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">Post Announcement</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };

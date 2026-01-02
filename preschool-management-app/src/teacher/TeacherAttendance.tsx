@@ -1,5 +1,6 @@
-import React from 'react';
-import { Layout } from '../layouts/Layout';
+import React from "react";
+import { Layout } from "../layouts/Layout";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 
 const attendanceSummary = {
   present: 20,
@@ -9,20 +10,32 @@ const attendanceSummary = {
 
 export const TeacherAttendance: React.FC = () => {
   return (
-    <Layout title="Attendance (View Only)">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-          <p className="text-green-800 font-semibold">Present</p>
-          <p className="text-3xl font-bold text-green-600 mt-2">{attendanceSummary.present}</p>
-        </div>
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <p className="text-red-800 font-semibold">Absent</p>
-          <p className="text-3xl font-bold text-red-600 mt-2">{attendanceSummary.absent}</p>
-        </div>
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <p className="text-yellow-800 font-semibold">Late</p>
-          <p className="text-3xl font-bold text-yellow-600 mt-2">{attendanceSummary.late}</p>
-        </div>
+    <Layout title="Attendance (View Only)" description="Daily attendance snapshot.">
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm text-muted-foreground">Present</CardTitle>
+          </CardHeader>
+          <CardContent className="text-3xl font-semibold">
+            {attendanceSummary.present}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm text-muted-foreground">Absent</CardTitle>
+          </CardHeader>
+          <CardContent className="text-3xl font-semibold">
+            {attendanceSummary.absent}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm text-muted-foreground">Late</CardTitle>
+          </CardHeader>
+          <CardContent className="text-3xl font-semibold">
+            {attendanceSummary.late}
+          </CardContent>
+        </Card>
       </div>
     </Layout>
   );

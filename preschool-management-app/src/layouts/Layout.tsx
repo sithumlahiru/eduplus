@@ -1,32 +1,39 @@
-import React from 'react';
-import { Sidebar } from './Sidebar';
+import React from "react";
+
+import { HeaderUserMenu, MobileSidebar, Sidebar } from "./Sidebar";
 
 interface LayoutProps {
   children: React.ReactNode;
   title?: string;
+  description?: string;
   headerRight?: React.ReactNode;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children, title, headerRight }) => {
+export const Layout: React.FC<LayoutProps> = ({ children, title, description, headerRight }) => {
   return (
-    <div className="flex flex-col md:flex-row h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted/40">
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex min-h-screen flex-col md:pl-72">
         {title && (
-          <header className="bg-white shadow">
-            <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <h1 className="text-3xl font-bold text-gray-900">{title}</h1>
-              {headerRight && (
-                <div className="text-sm font-medium text-gray-600">
-                  {headerRight}
+          <header className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur">
+            <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
+              <div className="flex items-start gap-3">
+                <MobileSidebar />
+                <div>
+                  <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">{title}</h1>
+                  {description && (
+                    <p className="text-sm text-muted-foreground">{description}</p>
+                  )}
                 </div>
-              )}
+              </div>
+              <div className="flex items-center gap-3">
+                {headerRight}
+                <HeaderUserMenu />
+              </div>
             </div>
           </header>
         )}
-        <main className="flex-1 overflow-auto p-4 md:p-8">
-          {children}
-        </main>
+        <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>
   );
